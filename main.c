@@ -34,8 +34,8 @@ int main() {
     // }
 
     program(&parser);
-    fprintf(file, "%s\n", parser.data_section);
-    fprintf(file, "%s", parser.text_section);
+    print_tree(&(parser.tree));
+    fclose(file);
 
     return 0;
 }

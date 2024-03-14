@@ -1,3 +1,6 @@
+structs = \
+	structs/tree.c
+
 parser = \
 	parser/parser.c
 
@@ -12,10 +15,11 @@ SRCS = \
 	main.c  \
 	$(lexer) \
 	$(utils) \
-	$(parser)
+	$(parser) \
+	$(structs)
 
 build:
-	gcc $(SRCS) -o main
+	gcc $(SRCS) -o main -g
 
 clean:
 	rm -rf ./main

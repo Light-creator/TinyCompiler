@@ -2,13 +2,17 @@
 #define _PARSER_H
 
 #include <stdbool.h>
+#include <assert.h>
 
 #include "../lexer/lexer.h"
 #include "../token/token.h"
+#include "../structs/tree.h"
 
 #define BUF_LEN 256
 #define DATA_LEN 2048
 #define TEXT_LEN 4096
+
+
 
 typedef struct _var {
     String_view title;
@@ -21,7 +25,7 @@ typedef struct _parser {
     Token curr_token;
     Token peek_token;
 
-    Tree ast;
+    Tree tree;
     // HashMap vars;
 
     // Var vars[BUF_LEN];
@@ -41,18 +45,15 @@ Parser create_parser(Lexer *l);
 void program(Parser *p);
 void statement(Parser *p);
 
+Node *parse_expression(Parser *p);
+Node *parse_expression_part(Token *expr_buf, int start, int end);
+
 bool check_token(Parser *p, token_type tk_type);
 bool check_peek_token(Parser *p, token_type tk_type);
 bool is_compare_signs(Parser *p);
 
 void next_token(Parser *p);
 void match(Parser *p, token_type tk_type);
-void new_line();
-
-void expression(Parser *p);
-void comparison(Parser *p);
-void term(Parser *p);
-void unary(Parser *p);
-void primary(Parser *p);
+void new_line(Parser *p);
 
 #endif

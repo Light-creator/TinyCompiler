@@ -1,3 +1,2 @@
-print 10
-pip = 10
-print pip
+input simple
+print 10 + 2
