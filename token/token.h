@@ -33,8 +33,8 @@ typedef enum {
     MINUS,
     ASTRERISK,
     SLASH,
-    SKL, // (
-    SKR, // )
+    BRL, // (
+    BRR, // )
     EQEQ,
     NOTEQ,
     LT,

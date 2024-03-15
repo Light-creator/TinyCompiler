@@ -1,5 +1,6 @@
 structs = \
-	structs/tree.c
+	structs/tree.c \
+	structs/hashMap.c
 
 parser = \
 	parser/parser.c

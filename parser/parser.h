@@ -7,6 +7,7 @@
 #include "../lexer/lexer.h"
 #include "../token/token.h"
 #include "../structs/tree.h"
+#include "../structs/hashMap.h"
 
 #define BUF_LEN 256
 #define DATA_LEN 2048
@@ -26,10 +27,7 @@ typedef struct _parser {
     Token peek_token;
 
     Tree tree;
-    // HashMap vars;
-
-    // Var vars[BUF_LEN];
-    // i32 vars_size;
+    HashMap vars;
 
     char *data_section;
     char *text_section;

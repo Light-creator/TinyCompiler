@@ -1,3 +1,2 @@
-break /home/light/Projects/TinyLang/main.c:36
-
+break /home/light/Projects/TinyLang/main.c:22
 

@@ -13,28 +13,14 @@ Lexer lexer;
 Parser parser;
 
 int main() {
-    // char *input = "let a = \"hello\" ";
-    // char *input = "+- !=<=>= != ! -*";
     char *input = read_content("prog_examples/example.tl");
     FILE *file = fopen("main.asm", "w");
-    // lexer = create_lexer(input);
-
-    // Token token = get_token(&lexer);
-    // while(token.tk_type != _EOF) {
-    //     print_sv(token.tk_text);
-    //     token = get_token(&lexer);
-    // }
 
     lexer = create_lexer(input);
     parser = create_parser(&lexer);
 
-    // while(parser.curr_token.tk_type != _EOF) {
-    //     printf("- %s\n", parser.curr_token.tk_text.data);
-    //     next_token(&parser);
-    // }
-
     program(&parser);
-    print_tree(&(parser.tree));
+    print_hashMap(&(parser.vars));
     fclose(file);
 
     return 0;

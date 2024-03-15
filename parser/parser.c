@@ -8,6 +8,7 @@ Parser create_parser(Lexer *l) {
     p.peek_token = get_token(p.lexer);
 
     p.tree = create_tree();
+    p.vars = create_hashMap();
 
     p.data_section = (char*)malloc(sizeof(char)*DATA_LEN);
     p.text_section = (char*)malloc(sizeof(char)*TEXT_LEN);
@@ -29,10 +30,6 @@ void program(Parser *p) {
     while(!check_token(p, _EOF)) {
         statement(p);
     }
-
-    // return 0
-    // strncpy(p->text_offset, "\nmov rax,60\nsyscall", 49);
-    // p->text_offset += 49;
 }
 
 void statement(Parser *p) {
@@ -56,6 +53,19 @@ void statement(Parser *p) {
             
             p->tree.curr_ptr->right = create_node(p->curr_token);
             match(p, INDENT);
+            break;
+        case INDENT:
+            tree_insert(&(p->tree), p->curr_token);
+            next_token(p);
+
+            p->tree.curr_ptr->right = create_node(p->curr_token);
+            match(p, EQ);
+
+            Node *expression_node = parse_expression(p);
+            p->tree.curr_ptr->right->right = expression_node;
+
+            insert_hashMap(&(p->vars), p->tree.curr_ptr->value.tk_text.data, (int)p->vars.size+1);
+            next_token(p);
             break;
         default: 
             printf("Undefined token\n");
@@ -96,50 +106,46 @@ Node *parse_expression(Parser *p) {
         next_token(p);
     }
 
-    int min_precedence = 3;
-    int min_idx = -1;
-    for(int i=0; i<size_buf; i++) {
-        int precedence = get_precedence(expr_buf[i].tk_type);
-        if(min_precedence >= precedence) {
-            min_precedence = precedence;
-            min_idx = i;
-        }
-    }
-
-    assert(min_idx != -1);
-    
-    Node *node = create_node(expr_buf[min_idx]);
-
-    node->right = parse_expression_part(expr_buf, min_idx+1, size_buf);
-    node->left = parse_expression_part(expr_buf, 0, min_idx);
-
-    return node;
+    return  parse_expression_part(expr_buf, 0, size_buf);
 }
 
 Node *parse_expression_part(Token *expr_buf, int start, int end) {
-    // printf("%d %d ", start, end);
     if(end - start <= 1) {
-        // printf("\n %s\n", expr_buf[start].tk_text.data);
         Node *new_node = create_node(expr_buf[start]);
-        printf("%s\n", new_node->value.tk_text.data);
         return new_node;
     }
 
     int min_precedence = 3;
     int min_idx = -1;
+    int count_brackets = 0;
+    bool flag_brackets = false;
     for(int i=start; i<end; i++) {
-        int precedence = get_precedence(expr_buf[i].tk_type);
-        if(min_precedence >= precedence) {
-            min_precedence = precedence;
-            min_idx = i;
+        if(expr_buf[i].tk_type == BRL) {
+            flag_brackets = true;
+            count_brackets++;
+            continue;
+        } else if(expr_buf[i].tk_type == BRR) {
+            count_brackets--;
+            continue;
+        }
+
+        if(count_brackets == 0) {
+            int precedence = get_precedence(expr_buf[i].tk_type);
+            if(min_precedence >= precedence) {
+                min_precedence = precedence;
+                min_idx = i;
+            }
         }
     } 
+
+    if(min_idx == -1 && flag_brackets) {
+        return parse_expression_part(expr_buf, start+1, end-1);
+    }
 
     assert(min_idx != -1);
     
     Node *node = create_node(expr_buf[min_idx]);
 
-    // printf("%d\n", min_idx);
     node->right = parse_expression_part(expr_buf, min_idx+1, end);
     node->left = parse_expression_part(expr_buf, start, min_idx);
 

@@ -47,4 +47,3 @@ void print_node(Node *node) {
     }
     printf("]; ");
 }
-

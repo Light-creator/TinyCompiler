@@ -1,2 +1,2 @@
-input simple
-print 10 + 2
+a = 7 + 10
+

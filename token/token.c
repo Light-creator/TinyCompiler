@@ -178,6 +178,12 @@ Token get_token(Lexer *l) {
                 token = TINY_TK(cstr_from_ch('<'), LT);
             }
             break;
+        case '(':
+            token = TINY_TK(cstr_from_ch('('), BRL);
+            break;
+        case ')':
+            token = TINY_TK(cstr_from_ch(')'), BRR);
+            break;
         case '\0':
             token = TINY_TK(cstr_from_ch('\0'), _EOF);
             break;
