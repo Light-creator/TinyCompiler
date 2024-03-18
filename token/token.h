@@ -41,6 +41,7 @@ typedef enum {
     LTEQ,
     GT,
     GTEQ,
+    COLON,
     BANG,
 } token_type;
 

@@ -57,10 +57,24 @@ int get_hashMap_value(HashMap *hm, char *key) {
 void rehash(HashMap *hm) {
     hm->capacity *= 2;
     HashNode **new_table = malloc(sizeof(HashNode*)*hm->capacity);
-
-    free_hashMap(hm);
-
+    for(int i=0; i<hm->capacity; i++) 
+         new_table[i] = NULL;
+        
+    HashNode **tmp = hm->table;
     hm->table = new_table;
+
+    for(int i=0; i<hm->capacity/2; i++) {
+        if(tmp[i] == NULL) continue;
+        HashNode *ptr = tmp[i];
+        while(ptr != NULL) {
+            insert_hashMap(hm, ptr->key, ptr->value);
+            ptr = ptr->next;   
+        }
+    }
+
+    for(int i=0; i<hm->capacity/2; i++)
+        free(tmp[i]);
+    free(tmp);
 }
 
 void free_hashMap(HashMap *hm) {

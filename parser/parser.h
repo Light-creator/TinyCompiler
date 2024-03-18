@@ -43,6 +43,7 @@ Parser create_parser(Lexer *l);
 void program(Parser *p);
 void statement(Parser *p);
 
+Node *parse_comparison(Parser *p);
 Node *parse_expression(Parser *p);
 Node *parse_expression_part(Token *expr_buf, int start, int end);
 

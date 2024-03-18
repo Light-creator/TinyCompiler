@@ -67,6 +67,13 @@ void statement(Parser *p) {
             insert_hashMap(&(p->vars), p->tree.curr_ptr->value.tk_text.data, (int)p->vars.size+1);
             next_token(p);
             break;
+        case WHILE:
+            tree_insert(&(p->tree), p->curr_token);
+            next_token(p);
+
+            Node *comparison_node = parse_comparison(p);
+
+            break;
         default: 
             printf("Undefined token\n");
             exit(1);
@@ -91,6 +98,40 @@ static int get_precedence(token_type tk_type) {
     }
 
     return -1;
+}
+
+Node *parse_comparison(Parser *p) {
+    Token expr_buf[BUF_LEN];
+    int size_buf = 0;
+    
+    while(size_buf < BUF_LEN) {
+        expr_buf[size_buf] = p->curr_token;
+        size_buf++;
+        if(p->peek_token.tk_type == NEWLINE) {
+            break;
+        }
+        next_token(p);
+    }
+
+    Node *node = NULL;
+    for(int i=0; i<size_buf; i++) {
+        switch(expr_buf[i].tk_type) {
+            case EQEQ: case NOTEQ: case LT: case LTEQ: case GT: case GTEQ: 
+                node = create_node(expr_buf[i]);
+                node->left = parse_expression_part(expr_buf, 0, i);
+                node->right = parse_expression_part(expr_buf, i+1, size_buf);
+                break;
+            default:
+                continue;
+        }
+    }
+
+    if(!node) {
+        printf("Parse comarison error...\n");
+        exit(1);
+    }
+
+    return node;
 }
 
 Node *parse_expression(Parser *p) {

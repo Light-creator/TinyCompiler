@@ -1,2 +1,0 @@
-break /home/light/Projects/TinyLang/main.c:22
-

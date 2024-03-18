@@ -154,6 +154,9 @@ Token get_token(Lexer *l) {
                 token = TINY_TK(cstr_from_ch('='), EQ);
             }
             break;
+        case ':':
+            token = TINY_TK(cstr_from_ch(':'), COLON);
+            break;
         case '!':
             if(peek_char(l) == '=') {
                 token = TINY_TK("!=", NOTEQ);
